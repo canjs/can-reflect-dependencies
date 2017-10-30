@@ -1,0 +1,38 @@
+{
+  "name": "can-reflect-mutate-dependencies",
+  "version": "1.0.0",
+  "description": "Keep track of external observable dependendecies",
+  "main": "index.js",
+  "scripts": {
+    "jshint": "jshint ./*.js --config",
+    "testee": "testee test.html --browsers firefox",
+    "test": "npm run jshint && npm run testee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canjs/can-reflect-mutate-dependencies.git"
+  },
+  "keywords": [
+    "canjs",
+    "can-reflect"
+  ],
+  "author": "Bitovi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/canjs/can-reflect-mutate-dependencies/issues"
+  },
+  "homepage": "https://github.com/canjs/can-reflect-mutate-dependencies#readme",
+  "dependencies": {
+    "can-reflect": "^1.7.1",
+    "can-symbol": "^1.4.1"
+  },
+  "devDependencies": {
+    "can-simple-map": "^4.0.0-pre.7",
+    "can-simple-observable": "^2.0.0-pre.16",
+    "jshint": "^2.9.5",
+    "steal": "^1.5.15",
+    "steal-qunit": "^1.0.1",
+    "steal-tools": "^1.9.1",
+    "testee": "^0.7.0"
+  }
+}
