@@ -2,7 +2,7 @@
   "name": "can-reflect-mutate-dependencies",
   "version": "1.0.0",
   "description": "Keep track of external observable dependendecies",
-  "main": "index.js",
+  "main": "can-reflect-mutate-dependencies.js",
   "scripts": {
     "jshint": "jshint ./*.js --config",
     "testee": "testee test.html --browsers firefox",
