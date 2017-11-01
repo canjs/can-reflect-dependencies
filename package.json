@@ -1,6 +1,6 @@
 {
   "name": "can-reflect-mutate-dependencies",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Keep track of external observable dependendecies",
   "main": "can-reflect-mutate-dependencies.js",
   "scripts": {
