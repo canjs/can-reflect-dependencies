@@ -1,7 +1,19 @@
 var QUnit = require('steal-qunit');
 var SimpleMap = require('can-simple-map');
-var mut = require('./can-reflect-mutate-dependencies');
 var SimpleObservable = require('can-simple-observable');
+var canReflectMutate = require('./can-reflect-mutate-dependencies');
+
+QUnit.module('can-reflect-mutate-dependencies');
+
+QUnit.test('getMutateDependencies should not throw (#4)', function(assert) {
+	var one = new SimpleObservable('one');
+
+	assert.equal(
+		typeof canReflectMutate.getValueDependencies(one),
+		'undefined',
+		'it should throw when obj missing from internal registry'
+	);
+});
 
 QUnit.module('can-reflect-mutate-dependencies: one to one');
 
@@ -16,16 +28,16 @@ QUnit.test('value - value dependency', function(assert) {
 	var two = new SimpleObservable('two');
 
 	// canReflect.onValue(two, _ => one.set('three'));
-	mut.addMutatedBy(one, two);
+	canReflectMutate.addMutatedBy(one, two);
 
 	assert.deepEqual(
-		mut.getValueDependencies(one).mutatedValueDependencies,
+		canReflectMutate.getValueDependencies(one).mutatedValueDependencies,
 		new Set([two])
 	);
 
-	mut.deleteMutatedBy(one, two);
+	canReflectMutate.deleteMutatedBy(one, two);
 	assert.equal(
-		typeof mut.getValueDependencies(one),
+		typeof canReflectMutate.getValueDependencies(one),
 		'undefined'
 	);
 });
@@ -38,15 +50,15 @@ QUnit.test('value - key dependency', function(assert) {
 	var mutator = { keyDependencies: keyDependencies };
 
 	// map.on('foo', _ => value.set('two'));
-	mut.addMutatedBy(value, mutator);
+	canReflectMutate.addMutatedBy(value, mutator);
 
 	assert.deepEqual(
-		mut.getValueDependencies(value).mutatedKeyDependencies,
+		canReflectMutate.getValueDependencies(value).mutatedKeyDependencies,
 		keyDependencies
 	);
 
-	mut.deleteMutatedBy(value, mutator);
-	assert.equal(typeof mut.getValueDependencies(value), 'undefined');
+	canReflectMutate.deleteMutatedBy(value, mutator);
+	assert.equal(typeof canReflectMutate.getValueDependencies(value), 'undefined');
 });
 
 QUnit.test('key - value dependency', function(assert) {
@@ -54,21 +66,21 @@ QUnit.test('key - value dependency', function(assert) {
 	var map = new SimpleMap({ foo: 'foo' });
 
 	// canReflect.onValue(value, _ => map.foo = 'bar');
-	mut.addMutatedBy(map, 'foo', one);
+	canReflectMutate.addMutatedBy(map, 'foo', one);
 
 	assert.equal(
-		typeof mut.getValueDependencies(map),
+		typeof canReflectMutate.getValueDependencies(map),
 		'undefined',
 		'has no value dependencies'
 	);
 
 	assert.deepEqual(
-		mut.getKeyDependencies(map, 'foo').mutatedValueDependencies,
+		canReflectMutate.getKeyDependencies(map, 'foo').mutatedValueDependencies,
 		new Set([one])
 	);
 
-	mut.deleteMutatedBy(map, 'foo', one);
-	assert.equal(typeof mut.getKeyDependencies(map, 'foo'), 'undefined');
+	canReflectMutate.deleteMutatedBy(map, 'foo', one);
+	assert.equal(typeof canReflectMutate.getKeyDependencies(map, 'foo'), 'undefined');
 });
 
 QUnit.module('can-reflect-mutate-dependencies: one to many');
@@ -87,14 +99,14 @@ QUnit.test('value - key & value dependencies', function(assert) {
 
 	// canReflect.onValue(one, _ => value.set('qux'))
 	// canReflect.onKeyValue(map, 'foo', _ => value.set('bar'))
-	mut.addMutatedBy(value, mutator);
+	canReflectMutate.addMutatedBy(value, mutator);
 
-	var res = mut.getValueDependencies(value);
+	var res = canReflectMutate.getValueDependencies(value);
 	assert.deepEqual(res.mutatedValueDependencies, new Set([one]));
 	assert.deepEqual(res.mutatedKeyDependencies, keyDependencies);
 
-	mut.deleteMutatedBy(value, mutator);
-	assert.equal(typeof mut.getValueDependencies(value), 'undefined');
+	canReflectMutate.deleteMutatedBy(value, mutator);
+	assert.equal(typeof canReflectMutate.getValueDependencies(value), 'undefined');
 });
 
 QUnit.test('key - key & value dependencies', function(assert) {
@@ -111,15 +123,15 @@ QUnit.test('key - key & value dependencies', function(assert) {
 
 	// canReflect.onValue(one, _ => map.foo = 'baz')
 	// canReflect.onKeyValue(map2, 'bar', _ => map.foo = 'qux')
-	mut.addMutatedBy(map, 'foo', mutator);
+	canReflectMutate.addMutatedBy(map, 'foo', mutator);
 
 	var expectedKeyMap = new Map();
 	expectedKeyMap.set(map2, new Set(['bar']));
 
-	var res = mut.getKeyDependencies(map, 'foo');
+	var res = canReflectMutate.getKeyDependencies(map, 'foo');
 	assert.deepEqual(res.mutatedValueDependencies, new Set([one]));
 	assert.deepEqual(res.mutatedKeyDependencies, expectedKeyMap);
 
-	mut.deleteMutatedBy(map, 'foo', mutator);
-	assert.equal(typeof mut.getKeyDependencies(map, 'foo'), 'undefined');
+	canReflectMutate.deleteMutatedBy(map, 'foo', mutator);
+	assert.equal(typeof canReflectMutate.getKeyDependencies(map, 'foo'), 'undefined');
 });
