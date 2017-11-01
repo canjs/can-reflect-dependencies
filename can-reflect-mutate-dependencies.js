@@ -35,6 +35,11 @@ var makeRootRecord = function makeRootRecord() {
 // param {DependencyRecord} mutateDependencies
 // return { ...DependencyRecord, mutatedKeyDependencies: Map, mutatedValueDependencies: Set }
 var getMutateDependencies = function(baseDependencies, mutateDependencies) {
+	// provide a default value for mutateDependencies
+	mutateDependencies = mutateDependencies == null ?
+		makeDependencyRecord() :
+		mutateDependencies;
+
 	var mutatedKeyDeps = mutateDependencies.keyDependencies;
 	var mutatedValueDeps = mutateDependencies.valueDependencies;
 
