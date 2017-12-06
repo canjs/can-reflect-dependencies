@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/canjs/can-reflect-dependencies#readme",
   "dependencies": {
-    "can-reflect": "^1.10.0",
+    "can-reflect": "^1.11.0",
     "can-symbol": "^1.4.1"
   },
   "devDependencies": {
