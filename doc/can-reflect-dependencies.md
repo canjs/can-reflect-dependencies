@@ -34,10 +34,10 @@ observable dependencies:
 If the observable derives its value from other observables internally, at least
 one of the following symbols must be implemented:
 
-- [@@@can.getKeyDependencies](can-symbol/symbols/getKeyDependencies.html): The key dependencies of the observable
-- [@@@can.getValueDependencies](https://canjs.com/doc/can-symbol/symbols/getValueDependencies.html): The value dependencies of the observable	
+- [can-symbol/symbols/getKeyDependencies @@@can.getKeyDependencies]: The key dependencies of the observable
+- [can-symbol/symbols/getValueDependencies @@@can.getValueDependencies]: The value dependencies of the observable	
 
-In the following example `MyCustomObservable` uses an [Observation](can-observation.html) 
+In the following example `MyCustomObservable` uses an [can-observation Observation]
 instance internally to derive its value:
 
 ```js
@@ -54,8 +54,8 @@ MyCustomObservable.prototype.get = function() {
 ```
 
 Since `MyCustomObservable` is a value-like observable, it has to implement
-[@@@can.getValueDependencies](https://canjs.com/doc/can-symbol/symbols/getValueDependencies.html) 
-so this dependency is visible to `getDependencyDataOf`.
+[can-symbol/symbols/getValueDependencies @@@can.getValueDependencies] so this 
+dependency is visible to [can-reflect-dependencies.getDependencyDataOf].
 
 ```js
 var canReflect = require("can-reflect");
@@ -78,7 +78,7 @@ by the symbols discussed so far.
 The following example shows two observables, a map-like instance `someMap` and a 
 value-like instance `myObservable`. When the `foo` property of `someMap` changes, 
 it sets the value of `myObservable`, in order to keep track of this dependency, 
-`addMutatedBy` has to be used as follows:
+[can-reflect-dependencies.addMutatedBy] has to be used as follows:
 
 ```js
 var someMap = new SomeMap();
@@ -96,8 +96,8 @@ canReflectDeps.addMutatedBy(myObservable, {
 });
 ```
 
-If this dependency is conditional, it's important to call `deleteMutatedBy` to
-remove the dependency from `can-reflect-dependencies` internal registry, e.g:
+If this dependency is conditional, it's important to call [can-reflect-dependencies.deleteMutatedBy] 
+to remove the dependency from `can-reflect-dependencies` internal registry, e.g:
 
 ```js
 /* code omitted for brevity */
@@ -135,8 +135,7 @@ things need to happen:
 	`@@@can.getChangesDependencyRecord` symbol.
 
 CanJS observables make this easier by attaching event handling capabilities through
-[can-event-queue](https://github.com/canjs/can-event-queue) mixins, adding in the
-[value mixin](https://github.com/canjs/can-event-queue/blob/master/value/value.js) 
+[can-event-queue] mixins, adding in the [can-event-queue/value/value value mixin] 
 to `SomeMap`'s prototype will add a base implementation of `@@@can.getWhatIChange` 
 which iterates over the registered handlers and calls `@@@can.getChangesDependencyRecord` 
 on each.
