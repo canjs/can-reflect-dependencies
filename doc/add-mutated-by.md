@@ -9,7 +9,7 @@ Register a mutation dependency between an observable and optional `key`, to one 
 many observables.
 
 Mutation dependencies happen when an observable sets another observable's value,
-the following example creates two [simple observable](can-simple-observable.html)
+the following example creates two [can-simple-observable simple observable]
 instances, then listens to the value event on the `one` observable and sets the
 value of the observable bound to the `two` variable:
 
@@ -35,10 +35,10 @@ properly), you can use `.addMutatedBy` like this:
 canReflectDeps.addMutatedBy(two, one);
 ```
 
-The previous example uses a shorthand to register a value dependency, it's also
-possible to register `keyDependencies` by passing a dependency record object instead.
+The previous example uses a shorthand to register a value dependency. 
 
-Let's build upon the previous example by creating a [simple map](can-simple-map.html) 
+It's also possible to register `keyDependencies` by passing a dependency record 
+object instead. Let's build upon the previous example by creating a [can-simple-map simple map] 
 instance that sets `two`'s value when its `age` property changes:
 
 ```js
@@ -71,7 +71,8 @@ canReflectDeps.addMutatedBy(two, {
 });
 ```
 
-An optional `key` can be passed as a second argument when registering [map like](can-reflect.isMapLike.html) observable mutations, e.g:
+An optional `key` can be passed as a second argument when registering [can-reflect.isMapLike map like] 
+observable mutations, e.g:
 
 
 ```js

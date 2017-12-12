@@ -8,9 +8,9 @@
 Unregister a mutation dependency between an observable and optional `key`, to one 
 or many observables.
 
-Call this method with the exact same arguments passed to [addMutatedBy](can-reflect-dependencies.addMutatedBy.html) to delete the mutation dependency, make sure to do 
-this if the event handler that introduced the mutation dependency in the first place 
-is unbound at some point.
+Call this method with the exact same arguments passed to [can-reflect-dependencies.addMutatedBy] 
+to delete the mutation dependency, make sure to do this if the event handler that 
+introduced the mutation dependency in the first place is unbound at some point.
 
 The following example shows to to delete the mutation dependency when the event
 handler is unbound: 
@@ -38,8 +38,8 @@ if (shouldUnbound) {
 }
 ```
 
-Check the [addMutatedBy](can-reflect-dependencies.addMutatedBy.html) documentation
-to learn the different ways mutation dependencies can be registered.
+Check the [can-reflect-dependencies.addMutatedBy] documentation to learn the 
+different ways mutation dependencies can be registered.
 
 @param {Object} observable The observable being set by other observable 
 @param {String} [key] The key on a map-like observable
