@@ -135,7 +135,7 @@ things need to happen:
 	`@@@can.getChangesDependencyRecord` symbol.
 
 CanJS observables make this easier by attaching event handling capabilities through
-[can-event-queue] mixins, adding in the [value mixin](https://github.com/canjs/can-event-queue/blob/master/value/value.js) 
+[can-event-queue] mixins, adding in the [can-event-queue/value/value value mixin] 
 to `SomeMap`'s prototype will add a base implementation of `@@@can.getWhatIChange` 
 which iterates over the registered handlers and calls `@@@can.getChangesDependencyRecord` 
 on each.
