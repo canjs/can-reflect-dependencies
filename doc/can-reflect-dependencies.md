@@ -169,7 +169,7 @@ With this in place the following code should work now:
 canReflectDeps.getDependencyDataOf(someMap, "foo"); // ... myObservable
 ```
 
-**NOTE**: This implementation requires `can-event-queue/value/value` mixin to be
-added to `SomeMap`'s prototype, if your observable uses custom event handling logic
-you need to implement `@@@can.getWhatIChange` and keep track of what the event 
-handlers are mutating manually.
+> Note: This implementation requires `can-event-queue/value/value` mixin to be
+> added to `SomeMap`'s prototype, if your observable uses custom event handling 
+> logic you need to implement `@@@can.getWhatIChange` and keep track of what the 
+> event handlers are mutating manually.
