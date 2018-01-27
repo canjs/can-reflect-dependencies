@@ -4,9 +4,15 @@
   "description": "Keep track of external observable dependendecies",
   "main": "can-reflect-dependencies.js",
   "scripts": {
+    "preversion": "npm test",
+    "postpublish": "git push --tags && git push",
     "jshint": "jshint ./*.js --config",
     "testee": "testee test.html --browsers firefox",
-    "test": "npm run jshint && npm run testee"
+    "test": "npm run jshint && npm run testee",
+    "release:pre": "npm version prerelease && npm publish --tag pre",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
   },
   "repository": {
     "type": "git",
@@ -27,12 +33,11 @@
     "can-symbol": "^1.4.1"
   },
   "devDependencies": {
-    "can-simple-map": "^4.0.0-pre.7",
-    "can-simple-observable": "^2.0.0-pre.16",
+    "can-simple-map": "^4.0.0",
+    "can-simple-observable": "^2.0.0",
     "jshint": "^2.9.5",
     "steal": "^1.5.15",
     "steal-qunit": "^1.0.1",
-    "steal-tools": "^1.9.1",
     "testee": "^0.7.0"
   }
 }
