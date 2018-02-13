@@ -8,7 +8,7 @@
 Get the dependencies of an observable, if `key` is provided, it would returns the
 dependencies of the `key` on the observable.
 
-```javascript
+```js
 const one = new SimpleObservable("one");
 const me = new SimpleMap({ age: 30 });
 
@@ -20,19 +20,19 @@ canReflectDeps.getDependencyDataOf(me, "age");
 
 The ouput is an object with either (or both) top level properties:
 
-```javascript
+```js
 {
-  whatIChange,    // Observables affected by the object passed as an argument,
-  whatChangesMe,  // Observables that affect the object passed as an argument
+	whatIChange,    // Observables affected by the object passed as an argument,
+	whatChangesMe,  // Observables that affect the object passed as an argument
 }
 ```
 
 Each of these properties contain an object with the following shape:
 
-```javascript
+```js
 {
-  mutate,  // Mutation dependencies
-  derive,  // Observables from which the parent derives its value
+	mutate,  // Mutation dependencies
+	derive,  // Observables from which the parent derives its value
 }
 ```
 

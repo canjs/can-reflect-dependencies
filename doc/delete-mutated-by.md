@@ -15,7 +15,7 @@ introduced the mutation dependency in the first place is unbound at some point.
 The following example shows to to delete the mutation dependency when the event
 handler is unbound: 
 
-```javascript
+```js
 import canReflect from "can-reflect";
 import SimpleObservable from "can-simple-observable";
 import canReflectDeps from "can-reflect-dependencies";
@@ -24,7 +24,7 @@ const one = new SimpleObservable("one");
 const two = new SimpleObservable("two");
 
 const cb = function() {
-  two.set(/* new value */);
+	two.set(/* new value */);
 };
 
 canReflect.onValue(one, cb);
@@ -33,8 +33,8 @@ canReflect.addMutatedBy(two, one);
 // ...
 
 if (shouldUnbound) {
-  canReflect.offValue(one, cb);
-  canReflect.deleteMutatedBy(two, one);
+	canReflect.offValue(one, cb);
+	canReflect.deleteMutatedBy(two, one);
 }
 ```
 
