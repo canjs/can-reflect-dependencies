@@ -11,11 +11,11 @@ retrieve observable dependencies.
 
 Exports an object with the following methods:
 
-```js
+```javascript
 {
-	addMutatedBy,        // Register observable mutation dependencies
-	deleteMutatedBy,     // Delete observable mutation dependencies
-	getDependencyDataOf, // Get the dependencies of an observable
+  addMutatedBy,        // Register observable mutation dependencies
+  deleteMutatedBy,     // Delete observable mutation dependencies
+  getDependencyDataOf, // Get the dependencies of an observable
 }
 ```
 
@@ -40,16 +40,16 @@ one of the following symbols must be implemented:
 In the following example `MyCustomObservable` uses an [can-observation Observation]
 instance internally to derive its value:
 
-```js
-var canSymbol = require("can-symbol");
-var observation = require("can-observation");
+```javascript
+import canSymbol from "can-symbol";
+import observation from "can-observation";
 
 function MyCustomObservable(value) {
-	this.observation = new Observation(...);
+  this.observation = new Observation( /* ... */ );
 }
 
 MyCustomObservable.prototype.get = function() {
-	return this.observation.get();
+  return this.observation.get();
 };
 ```
 
@@ -57,17 +57,17 @@ Since `MyCustomObservable` is a value-like observable, it has to implement
 [can-symbol/symbols/getValueDependencies @@@can.getValueDependencies] so this
 dependency is visible to [can-reflect-dependencies.getDependencyDataOf].
 
-```js
-var canReflect = require("can-reflect");
+```javascript
+import canReflect from "can-reflect";
 
-function MyCustomObservable() { ... }
+function MyCustomObservable() { /* ... */ }
 
 canReflect.assignSymbols(MyCustomObservable, {
-	"can.getValueDependencies": function() {
-		return {
-			valueDependencies: new Set([ this.observation ])
-		};
-	}
+  "can.getValueDependencies": function() {
+    return {
+      valueDependencies: new Set([ this.observation ])
+    };
+  }
 });
 ```
 
@@ -80,36 +80,36 @@ value-like instance `myObservable`. When the `foo` property of `someMap` changes
 it sets the value of `myObservable`, in order to keep track of this dependency,
 [can-reflect-dependencies.addMutatedBy] has to be used as follows:
 
-```js
-var someMap = new SomeMap();
-var myObservable = new MyCustomObservable();
-var canReflectDeps = require("can-reflect-dependencies");
+```javascript
+const someMap = new SomeMap();
+const myObservable = new MyCustomObservable();
+import canReflectDeps from "can-reflect-dependencies";
 
 // when the foo property changes, update myObservable
 someMap.on("foo", function() {
-	myObservable.set(/* some value */);
+  myObservable.set(/* some value */);
 });
 
 // Register that `myObservable` is affected by the `foo` property of `someMap`
 canReflectDeps.addMutatedBy(myObservable, {
-	keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
+  keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
 });
 ```
 
 If this dependency is conditional, it's important to call [can-reflect-dependencies.deleteMutatedBy]
 to remove the dependency from `can-reflect-dependencies` internal registry, e.g:
 
-```js
+```javascript
 /* code omitted for brevity */
 
 if (hasToStopListeningToFooChanges) {
-	// remove the event listener
-	someMap.off("foo", onFooChange);
+  // remove the event listener
+  someMap.off("foo", onFooChange);
 
-	// remove the dependency from `can-reflect-dependencies`
-	canReflectDeps.deleteMutatedBy(myObservable, {
-		keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
-	});
+  // remove the dependency from `can-reflect-dependencies`
+  canReflectDeps.deleteMutatedBy(myObservable, {
+    keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
+  });
 }
 ```
 
@@ -119,7 +119,7 @@ In the previous section, `addMutatedBy` was used to register that `someMap.foo`
 affects `myObservable`'s value; in its current form `can-reflect-dependencies`
 can only _see_ the dependency from `myObservable`, that means:
 
-```js
+```javascript
 // this works!
 canReflectDeps.getDependencyDataOf(myObservable);
 
@@ -144,20 +144,20 @@ Having `@@@can.getWhatIChange` implemented by `can-event-queue`, the next thing
 to do is to implement `@@@can.getChangesDependencyRecord` on the event handler
 that mutates `myObservable`.
 
-```js
+```javascript
 /* code omitted for brevity */
 
 // Bind the callback to a variable to make adding the symbol easier
-var onFooChange = function() {
-	myObservable.set(/* some value */);
+const onFooChange = function() {
+  myObservable.set(/* some value */);
 };
 
 canReflect.assignSymbols(onFooChange, {
-	"can.getChangesDependencyRecord": function() {
-		return {
-			valueDependencies: new Set([ myObservable ])
-		};
-	}
+  "can.getChangesDependencyRecord": function() {
+    return {
+      valueDependencies: new Set([ myObservable ])
+    };
+  }
 });
 
 someMap.on("foo", onFooChange);
@@ -165,8 +165,8 @@ someMap.on("foo", onFooChange);
 
 With this in place the following code should work now:
 
-```js
-canReflectDeps.getDependencyDataOf(someMap, "foo"); // ... myObservable
+```javascript
+canReflectDeps.getDependencyDataOf(someMap, "foo"); // ...myObservable
 ```
 
 > Note: This implementation requires `can-event-queue/value/value` mixin to be
