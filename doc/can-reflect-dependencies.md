@@ -15,7 +15,7 @@ Exports an object with the following methods:
 {
 	addMutatedBy,        // Register observable mutation dependencies
 	deleteMutatedBy,     // Delete observable mutation dependencies
-	getDependencyDataOf, // Get the dependencies of an observable
+	getDependencyDataOf // Get the dependencies of an observable
 }
 ```
 
@@ -44,7 +44,7 @@ instance internally to derive its value:
 import canSymbol from "can-symbol";
 import observation from "can-observation";
 
-function MyCustomObservable(value) {
+function MyCustomObservable( value ) {
 	this.observation = new Observation( /* ... */ );
 }
 
@@ -62,13 +62,13 @@ import canReflect from "can-reflect";
 
 function MyCustomObservable() { /* ... */ }
 
-canReflect.assignSymbols(MyCustomObservable, {
+canReflect.assignSymbols( MyCustomObservable, {
 	"can.getValueDependencies": function() {
 		return {
-			valueDependencies: new Set([ this.observation ])
+			valueDependencies: new Set( [ this.observation ] )
 		};
 	}
-});
+} );
 ```
 
 It's possible that a specific instance's value of `MyCustomObservable` is set by
@@ -86,14 +86,14 @@ const myObservable = new MyCustomObservable();
 import canReflectDeps from "can-reflect-dependencies";
 
 // when the foo property changes, update myObservable
-someMap.on("foo", function() {
-	myObservable.set(/* some value */);
-});
+someMap.on( "foo", function() {
+	myObservable.set( /* some value */ );
+} );
 
 // Register that `myObservable` is affected by the `foo` property of `someMap`
-canReflectDeps.addMutatedBy(myObservable, {
-	keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
-});
+canReflectDeps.addMutatedBy( myObservable, {
+	keyDependencies: new Map( [ [ someMap, new Set( [ "foo" ] ) ] ] )
+} );
 ```
 
 If this dependency is conditional, it's important to call [can-reflect-dependencies.deleteMutatedBy]
@@ -102,14 +102,15 @@ to remove the dependency from `can-reflect-dependencies` internal registry, e.g:
 ```js
 /* code omitted for brevity */
 
-if (hasToStopListeningToFooChanges) {
+if ( hasToStopListeningToFooChanges ) {
+
 	// remove the event listener
-	someMap.off("foo", onFooChange);
+	someMap.off( "foo", onFooChange );
 
 	// remove the dependency from `can-reflect-dependencies`
-	canReflectDeps.deleteMutatedBy(myObservable, {
-		keyDependencies: new Map([ [someMap, new Set(["foo"])] ]),
-	});
+	canReflectDeps.deleteMutatedBy( myObservable, {
+		keyDependencies: new Map( [ [ someMap, new Set( [ "foo" ] ) ] ] )
+	} );
 }
 ```
 
@@ -121,10 +122,10 @@ can only _see_ the dependency from `myObservable`, that means:
 
 ```js
 // this works!
-canReflectDeps.getDependencyDataOf(myObservable);
+canReflectDeps.getDependencyDataOf( myObservable );
 
 // but this does not, it returns `undefined` :(
-canReflectDeps.getDependencyDataOf(someMap, "foo");
+canReflectDeps.getDependencyDataOf( someMap, "foo" );
 ```
 
 In order to register the dependency in the opossite direction, the following
@@ -149,24 +150,24 @@ that mutates `myObservable`.
 
 // Bind the callback to a variable to make adding the symbol easier
 const onFooChange = function() {
-	myObservable.set(/* some value */);
+	myObservable.set( /* some value */ );
 };
 
-canReflect.assignSymbols(onFooChange, {
+canReflect.assignSymbols( onFooChange, {
 	"can.getChangesDependencyRecord": function() {
 		return {
-			valueDependencies: new Set([ myObservable ])
+			valueDependencies: new Set( [ myObservable ] )
 		};
 	}
-});
+} );
 
-someMap.on("foo", onFooChange);
+someMap.on( "foo", onFooChange );
 ```
 
 With this in place the following code should work now:
 
 ```js
-canReflectDeps.getDependencyDataOf(someMap, "foo"); // ...myObservable
+canReflectDeps.getDependencyDataOf( someMap, "foo" ); // ...myObservable
 ```
 
 > Note: This implementation requires `can-event-queue/value/value` mixin to be

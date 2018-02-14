@@ -9,13 +9,13 @@ Get the dependencies of an observable, if `key` is provided, it would returns th
 dependencies of the `key` on the observable.
 
 ```js
-const one = new SimpleObservable("one");
-const me = new SimpleMap({ age: 30 });
+const one = new SimpleObservable( "one" );
+const me = new SimpleMap( { age: 30 } );
 
-canReflectDeps.getDependencyDataOf(one);
+canReflectDeps.getDependencyDataOf( one );
 
 // or pass a key for map-like observables
-canReflectDeps.getDependencyDataOf(me, "age");
+canReflectDeps.getDependencyDataOf( me, "age" );
 ```
 
 The ouput is an object with either (or both) top level properties:
@@ -23,7 +23,7 @@ The ouput is an object with either (or both) top level properties:
 ```js
 {
 	whatIChange,    // Observables affected by the object passed as an argument,
-	whatChangesMe,  // Observables that affect the object passed as an argument
+	whatChangesMe  // Observables that affect the object passed as an argument
 }
 ```
 
@@ -32,7 +32,7 @@ Each of these properties contain an object with the following shape:
 ```js
 {
 	mutate,  // Mutation dependencies
-	derive,  // Observables from which the parent derives its value
+	derive  // Observables from which the parent derives its value
 }
 ```
 
