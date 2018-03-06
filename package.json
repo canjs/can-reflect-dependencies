@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "can-simple-map": "^4.0.0",
-    "can-simple-observable": "^2.0.0",
+    "can-simple-observable": "^2.0.3",
     "jshint": "^2.9.5",
     "steal": "^1.5.15",
     "steal-qunit": "^1.0.1",
