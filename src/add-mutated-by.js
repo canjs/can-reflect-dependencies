@@ -42,11 +42,13 @@ module.exports = function(mutatedByMap) {
 			mutatedByMap.set(mutated, root);
 		}
 
-		// retrieve or create a [key] DependencyRecord, if [key] was provided
-		if (gotKey) {
+		// create a [key] DependencyRecord if [key] was provided
+		// and Record does not already exist
+		if (gotKey && !root.mutateDependenciesForKey.get(key)) {
 			root.mutateDependenciesForKey.set(key, makeDependencyRecord());
 		}
 
+		// retrieve DependencyRecord
 		var dependencyRecord = gotKey ?
 			root.mutateDependenciesForKey.get(key) :
 			root.mutateDependenciesForValue;
