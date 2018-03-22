@@ -129,3 +129,52 @@ QUnit.test("key - key & value dependencies", function(assert) {
 		"undefined"
 	);
 });
+
+QUnit.test("key - two value dependencies (#15)", function(assert) {
+	var source = new SimpleMap({
+		key: "keyValue"
+	});
+	var one = new SimpleObservable("one");
+	var two = new SimpleObservable("two");
+
+	// canReflect.onValue(one, _ => source.set('key', 'three'));
+	canReflectDeps.addMutatedBy(source, "key", one);
+
+	assert.deepEqual(
+		canReflectDeps
+			.getDependencyDataOf(source, "key")
+			.whatChangesMe
+			.mutate
+			.valueDependencies,
+		new Set([ one ]),
+		"key -> Set([ one ])"
+	);
+
+	// canReflect.onValue(two, _ => source.set('key', 'four'));
+	canReflectDeps.addMutatedBy(source, "key", two);
+
+	assert.deepEqual(
+		canReflectDeps
+			.getDependencyDataOf(source, "key")
+			.whatChangesMe
+			.mutate
+			.valueDependencies,
+		new Set([ one, two ]),
+		"key -> Set([ one, two ])"
+	);
+
+	canReflectDeps.deleteMutatedBy(source, "key", one);
+
+	assert.deepEqual(
+		canReflectDeps
+			.getDependencyDataOf(source, "key")
+			.whatChangesMe
+			.mutate
+			.valueDependencies,
+		new Set([ two ]),
+		"key -> Set([ two ])"
+	);
+
+	canReflectDeps.deleteMutatedBy(source, "key", two);
+	assert.equal(typeof canReflectDeps.getDependencyDataOf(source), "undefined");
+});
