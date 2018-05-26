@@ -33,7 +33,7 @@
     "can-symbol": "^1.4.1"
   },
   "devDependencies": {
-    "can-simple-map": "^4.0.0",
+    "can-simple-map": "^4.1.1",
     "can-simple-observable": "^2.0.0",
     "jshint": "^2.9.5",
     "steal": "^1.5.15",
