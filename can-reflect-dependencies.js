@@ -1,3 +1,4 @@
+"use strict";
 var addMutatedBy = require("./src/add-mutated-by");
 var deleteMutatedBy = require("./src/delete-mutated-by");
 var getDependencyDataOf = require("./src/get-dependency-data-of");
