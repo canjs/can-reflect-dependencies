@@ -14,7 +14,9 @@ module.exports = function(mutatedByMap) {
 
 		// normalize mutator when shorthand is used
 		if (!mutator.keyDependencies && !mutator.valueDependencies) {
-			mutator = { valueDependencies: new Set([mutator]) };
+			var s = new Set();
+			s.add(mutator);
+			mutator = { valueDependencies: s };
 		}
 
 		var dependencyRecord = gotKey ?
