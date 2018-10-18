@@ -83,9 +83,11 @@ QUnit.test("value - key & value dependencies", function(assert) {
 	var one = new SimpleObservable("one");
 
 	var keyDependencies = makeKeyDependencies(map, ["foo"]);
+	var valueDependencies = new Set();
+	valueDependencies.add(one);
 	var mutator = {
 		keyDependencies: keyDependencies,
-		valueDependencies: new Set([one])
+		valueDependencies: valueDependencies
 	};
 
 	// canReflect.onValue(one, _ => value.set('qux'))
@@ -93,7 +95,9 @@ QUnit.test("value - key & value dependencies", function(assert) {
 	canReflectDeps.addMutatedBy(value, mutator);
 
 	var res = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
-	assert.deepEqual(res.mutate.valueDependencies, new Set([one]));
+	var expected = new Set();
+	expected.add(one);
+	assert.deepEqual(res.mutate.valueDependencies, expected);
 	assert.deepEqual(res.mutate.keyDependencies, keyDependencies);
 
 	canReflectDeps.deleteMutatedBy(value, mutator);

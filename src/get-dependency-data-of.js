@@ -2,6 +2,7 @@
 var canSymbol = require("can-symbol");
 var canReflect = require("can-reflect");
 var isFunction = require("./is-function");
+var canAssign = require("can-assign");
 
 var getWhatIChangeSymbol = canSymbol.for("can.getWhatIChange");
 var getKeyDependenciesSymbol = canSymbol.for("can.getKeyDependencies");
@@ -84,9 +85,11 @@ var getWhatChangesMe = function getWhatChangesMe(mutatedByMap, obj, key) {
 		getValueDependencies(obj);
 
 	if (!isEmptyRecord(mutate) || !isEmptyRecord(derive)) {
-		return Object.assign(
-			{},
-			mutate ? { mutate: mutate } : null,
+		return canAssign(
+			canAssign(
+				{},
+				mutate ? { mutate: mutate } : null
+			),
 			derive ? { derive: derive } : null
 		);
 	}
@@ -103,9 +106,11 @@ module.exports = function(mutatedByMap) {
 		var whatIChange = gotKey ? getWhatIChange(obj, key) : getWhatIChange(obj);
 
 		if (whatChangesMe || whatIChange) {
-			return Object.assign(
-				{},
-				whatIChange ? { whatIChange: whatIChange } : null,
+			return canAssign(
+				canAssign(
+					{},
+					whatIChange ? { whatIChange: whatIChange } : null
+				),
 				whatChangesMe ? { whatChangesMe: whatChangesMe } : null
 			);
 		}
