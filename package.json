@@ -1,6 +1,6 @@
 {
   "name": "can-reflect-dependencies",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Keep track of external observable dependendecies",
   "main": "can-reflect-dependencies.js",
   "scripts": {
