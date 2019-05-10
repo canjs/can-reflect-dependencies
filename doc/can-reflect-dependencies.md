@@ -1,6 +1,7 @@
 @module {Object} can-reflect-dependencies
 @parent can-typed-data
 @collection can-infrastructure
+@package ../package.json
 
 @description Functions to keep track of observable dependencies.
 
