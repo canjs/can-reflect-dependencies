@@ -37,7 +37,7 @@
     "can-simple-map": "^4.0.0",
     "can-simple-observable": "^2.0.0",
     "jshint": "^2.9.5",
-    "steal": "^1.5.15",
+    "steal": "^2.2.2",
     "steal-qunit": "^2.0.0",
     "testee": "^0.9.0"
   }
