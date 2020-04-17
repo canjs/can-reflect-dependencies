@@ -29,6 +29,10 @@ var getMutatedKeyDependencies =
 			dependencyRecord = root.mutateDependenciesForKey.get(key);
 		}
 
+		if (root && root.mutationGroupOfMutateDependenciesForKey.has(key)) {
+			dependencyRecord.mutationGroups = root.mutationGroupOfMutateDependenciesForKey.get(key);
+		}
+
 		return dependencyRecord;
 	};
 
@@ -43,11 +47,19 @@ var getMutatedValueDependencies =
 			if (dependencyRecord.keyDependencies.size) {
 				result = result || {};
 				result.keyDependencies = dependencyRecord.keyDependencies;
+
+				if (root.mutationGroupOfMutateDependenciesForValue) {
+					result.mutationGroups = root.mutationGroupOfMutateDependenciesForValue;
+				}
 			}
 
 			if (dependencyRecord.valueDependencies.size) {
 				result = result || {};
 				result.valueDependencies = dependencyRecord.valueDependencies;
+
+				if (root.mutationGroupOfMutateDependenciesForValue) {
+					result.mutationGroups = root.mutationGroupOfMutateDependenciesForValue;
+				}
 			}
 		}
 

@@ -182,3 +182,98 @@ QUnit.test("key - two value dependencies (#15)", function(assert) {
 	canReflectDeps.deleteMutatedBy(source, "key", two);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(source), "undefined");
 });
+
+QUnit.module("can-reflect-dependencies: mutation groups");
+
+QUnit.test("value - value dependency", function(assert) {
+	var one = new SimpleObservable("one");
+	var two = new SimpleObservable("two");
+	var groupName = "value:bind='bar'";
+
+	// canReflect.onValue(two, _ => one.set('three'));
+	canReflectDeps.setMutationGroup(groupName);
+	canReflectDeps.addMutatedBy(one, two);
+	canReflectDeps.clearMutationGroup();
+
+	var expectedGroups = new Map();
+	expectedGroups.set({ valueDependencies: new Set([two]) }, groupName);
+
+	assert.deepEqual(canReflectDeps.getDependencyDataOf(one).whatChangesMe, {
+		mutate: {
+			valueDependencies: new Set([two]),
+			mutationGroups: expectedGroups
+		}
+	});
+
+	canReflectDeps.deleteMutatedBy(one, two);
+	assert.equal(typeof canReflectDeps.getDependencyDataOf(one), "undefined");
+});
+
+QUnit.test("value - key dependency", function(assert) {
+	var value = new SimpleObservable("one");
+	var map = new SimpleMap({ foo: "foo" });
+
+	var keyDependencies = makeKeyDependencies(map, ["foo"]);
+	var mutator = { keyDependencies: keyDependencies };
+	var groupName = "value:bind='bar'";
+
+	// map.on('foo', _ => value.set('two'));
+	canReflectDeps.setMutationGroup(groupName);
+	canReflectDeps.addMutatedBy(value, mutator);
+	canReflectDeps.clearMutationGroup();
+
+	var expectedGroups = new Map();
+	expectedGroups.set({ keyDependencies: keyDependencies }, groupName);
+
+	var res = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
+	assert.deepEqual(res.mutate.keyDependencies, keyDependencies);
+	assert.deepEqual(res.mutate.mutationGroups, expectedGroups, "has correct mutation group for value dependencies");
+
+	canReflectDeps.deleteMutatedBy(value, mutator);
+	assert.equal(typeof canReflectDeps.getDependencyDataOf(value), "undefined");
+});
+
+QUnit.test("key - value dependency", function(assert) {
+	var one = new SimpleObservable("one");
+	var map = new SimpleMap({ foo: "foo" });
+	var groupName = "value:bind='bar'";
+
+	// canReflect.onValue(value, _ => map.foo = 'bar');
+	canReflectDeps.setMutationGroup(groupName);
+	canReflectDeps.addMutatedBy(map, "foo", one);
+	canReflectDeps.clearMutationGroup();
+
+	assert.equal(
+		typeof canReflectDeps.getDependencyDataOf(map),
+		"undefined",
+		"has no value dependencies"
+	);
+
+	assert.deepEqual(
+		canReflectDeps
+			.getDependencyDataOf(map, "foo")
+			.whatChangesMe
+			.mutate
+			.valueDependencies,
+		new Set([one]),
+		"has correct value dependencies"
+	);
+
+	var expectedGroups = new Map();
+	expectedGroups.set({ valueDependencies: new Set([one]) }, groupName);
+	assert.deepEqual(
+		canReflectDeps
+			.getDependencyDataOf(map, "foo")
+			.whatChangesMe
+			.mutate
+			.mutationGroups,
+		expectedGroups,
+		"has correct mutation group for value dependencies"
+	);
+
+	canReflectDeps.deleteMutatedBy(map, "foo", one);
+	assert.equal(
+		typeof canReflectDeps.getDependencyDataOf(map, "foo"),
+		"undefined"
+	);
+});

@@ -17,13 +17,20 @@ var makeRootRecord = function makeRootRecord() {
 		mutateDependenciesForKey: new Map(),
 
 		// holds mutated value dependencies of value-like objects
-		mutateDependenciesForValue: makeDependencyRecord()
+		mutateDependenciesForValue: makeDependencyRecord(),
+
+		// mutation group associated with key dependencies
+		mutationGroupOfMutateDependenciesForKey: new Map(),
+
+		// mutation group associated with value dependencies
+		mutationGroupOfMutateDependenciesForValue: new Map()
 	};
 };
 
-module.exports = function(mutatedByMap) {
+module.exports = function(mutatedByMap, mutationGroupKey) {
 	return function addMutatedBy(mutated, key, mutator) {
 		var gotKey = arguments.length === 3;
+		var mutationGroup = mutatedByMap.get(mutationGroupKey);
 
 		// normalize arguments
 		if (arguments.length === 2) {
@@ -43,6 +50,19 @@ module.exports = function(mutatedByMap) {
 		if (!root) {
 			root = makeRootRecord();
 			mutatedByMap.set(mutated, root);
+		}
+
+		if (mutationGroup) {
+			if (gotKey) {
+				var mutationMapForKey = root.mutationGroupOfMutateDependenciesForKey.get(key);
+				if (!mutationMapForKey) {
+					mutationMapForKey = new Map();
+					root.mutationGroupOfMutateDependenciesForKey.set(key, mutationMapForKey);
+				}
+				mutationMapForKey.set(mutator, mutationGroup);
+			} else {
+				root.mutationGroupOfMutateDependenciesForValue.set(mutator, mutationGroup);
+			}
 		}
 
 		// create a [key] DependencyRecord if [key] was provided
