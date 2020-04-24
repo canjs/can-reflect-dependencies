@@ -18,11 +18,8 @@ QUnit.test("value - value dependency", function(assert) {
 	// canReflect.onValue(two, _ => one.set('three'));
 	canReflectDeps.addMutatedBy(one, two);
 
-	assert.deepEqual(canReflectDeps.getDependencyDataOf(one).whatChangesMe, {
-		mutate: {
-			valueDependencies: new Set([two])
-		}
-	});
+	var deps = canReflectDeps.getDependencyDataOf(one).whatChangesMe;
+	assert.deepEqual(deps.mutate.valueDependencies, new Set([two]));
 
 	canReflectDeps.deleteMutatedBy(one, two);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(one), "undefined");
@@ -38,8 +35,8 @@ QUnit.test("value - key dependency", function(assert) {
 	// map.on('foo', _ => value.set('two'));
 	canReflectDeps.addMutatedBy(value, mutator);
 
-	var res = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
-	assert.deepEqual(res.mutate.keyDependencies, keyDependencies);
+	var deps = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
+	assert.deepEqual(deps.mutate.keyDependencies, keyDependencies);
 
 	canReflectDeps.deleteMutatedBy(value, mutator);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(value), "undefined");
@@ -58,12 +55,9 @@ QUnit.test("key - value dependency", function(assert) {
 		"has no value dependencies"
 	);
 
+	var deps = canReflectDeps.getDependencyDataOf(map, "foo").whatChangesMe;
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(map, "foo")
-			.whatChangesMe
-			.mutate
-			.valueDependencies,
+		deps.mutate.valueDependencies,
 		new Set([one])
 	);
 
@@ -94,11 +88,11 @@ QUnit.test("value - key & value dependencies", function(assert) {
 	// canReflect.onKeyValue(map, 'foo', _ => value.set('bar'))
 	canReflectDeps.addMutatedBy(value, mutator);
 
-	var res = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
+	var deps = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
 	var expected = new Set();
 	expected.add(one);
-	assert.deepEqual(res.mutate.valueDependencies, expected);
-	assert.deepEqual(res.mutate.keyDependencies, keyDependencies);
+	assert.deepEqual(deps.mutate.valueDependencies, expected);
+	assert.deepEqual(deps.mutate.keyDependencies, keyDependencies);
 
 	canReflectDeps.deleteMutatedBy(value, mutator);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(value), "undefined");
@@ -123,9 +117,9 @@ QUnit.test("key - key & value dependencies", function(assert) {
 	var expectedKeyMap = new Map();
 	expectedKeyMap.set(map2, new Set(["bar"]));
 
-	var res = canReflectDeps.getDependencyDataOf(map, "foo").whatChangesMe;
-	assert.deepEqual(res.mutate.valueDependencies, new Set([one]));
-	assert.deepEqual(res.mutate.keyDependencies, expectedKeyMap);
+	var deps = canReflectDeps.getDependencyDataOf(map, "foo").whatChangesMe;
+	assert.deepEqual(deps.mutate.valueDependencies, new Set([one]));
+	assert.deepEqual(deps.mutate.keyDependencies, expectedKeyMap);
 
 	canReflectDeps.deleteMutatedBy(map, "foo", mutator);
 	assert.equal(
@@ -144,12 +138,9 @@ QUnit.test("key - two value dependencies (#15)", function(assert) {
 	// canReflect.onValue(one, _ => source.set('key', 'three'));
 	canReflectDeps.addMutatedBy(source, "key", one);
 
+	var deps = canReflectDeps.getDependencyDataOf(source, "key").whatChangesMe;
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(source, "key")
-			.whatChangesMe
-			.mutate
-			.valueDependencies,
+		deps.mutate.valueDependencies,
 		new Set([ one ]),
 		"key -> Set([ one ])"
 	);
@@ -157,24 +148,18 @@ QUnit.test("key - two value dependencies (#15)", function(assert) {
 	// canReflect.onValue(two, _ => source.set('key', 'four'));
 	canReflectDeps.addMutatedBy(source, "key", two);
 
+	deps = canReflectDeps.getDependencyDataOf(source, "key").whatChangesMe;
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(source, "key")
-			.whatChangesMe
-			.mutate
-			.valueDependencies,
+		deps.mutate.valueDependencies,
 		new Set([ one, two ]),
 		"key -> Set([ one, two ])"
 	);
 
 	canReflectDeps.deleteMutatedBy(source, "key", one);
 
+	deps = canReflectDeps.getDependencyDataOf(source, "key").whatChangesMe;
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(source, "key")
-			.whatChangesMe
-			.mutate
-			.valueDependencies,
+		deps.mutate.valueDependencies,
 		new Set([ two ]),
 		"key -> Set([ two ])"
 	);
@@ -198,12 +183,9 @@ QUnit.test("value - value dependency", function(assert) {
 	var expectedGroups = new Map();
 	expectedGroups.set({ valueDependencies: new Set([two]) }, groupName);
 
-	assert.deepEqual(canReflectDeps.getDependencyDataOf(one).whatChangesMe, {
-		mutate: {
-			valueDependencies: new Set([two]),
-			mutationGroups: expectedGroups
-		}
-	});
+	var deps = canReflectDeps.getDependencyDataOf(one).whatChangesMe;
+	assert.deepEqual(deps.mutate.valueDependencies, new Set([two]));
+	assert.deepEqual(deps.mutate.mutationGroups, expectedGroups);
 
 	canReflectDeps.deleteMutatedBy(one, two);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(one), "undefined");
@@ -225,9 +207,9 @@ QUnit.test("value - key dependency", function(assert) {
 	var expectedGroups = new Map();
 	expectedGroups.set({ keyDependencies: keyDependencies }, groupName);
 
-	var res = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
-	assert.deepEqual(res.mutate.keyDependencies, keyDependencies);
-	assert.deepEqual(res.mutate.mutationGroups, expectedGroups, "has correct mutation group for value dependencies");
+	var deps = canReflectDeps.getDependencyDataOf(value).whatChangesMe;
+	assert.deepEqual(deps.mutate.keyDependencies, keyDependencies);
+	assert.deepEqual(deps.mutate.mutationGroups, expectedGroups, "has correct mutation group for value dependencies");
 
 	canReflectDeps.deleteMutatedBy(value, mutator);
 	assert.equal(typeof canReflectDeps.getDependencyDataOf(value), "undefined");
@@ -249,12 +231,9 @@ QUnit.test("key - value dependency", function(assert) {
 		"has no value dependencies"
 	);
 
+	var deps = canReflectDeps.getDependencyDataOf(map, "foo").whatChangesMe;
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(map, "foo")
-			.whatChangesMe
-			.mutate
-			.valueDependencies,
+		deps.mutate.valueDependencies,
 		new Set([one]),
 		"has correct value dependencies"
 	);
@@ -262,11 +241,7 @@ QUnit.test("key - value dependency", function(assert) {
 	var expectedGroups = new Map();
 	expectedGroups.set({ valueDependencies: new Set([one]) }, groupName);
 	assert.deepEqual(
-		canReflectDeps
-			.getDependencyDataOf(map, "foo")
-			.whatChangesMe
-			.mutate
-			.mutationGroups,
+		deps.mutate.mutationGroups,
 		expectedGroups,
 		"has correct mutation group for value dependencies"
 	);
